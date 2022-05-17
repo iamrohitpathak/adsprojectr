@@ -2,8 +2,157 @@
 <html>
 <body>
 
-<h1>My First Heading</h1>
-<p>My first paragraph.</p>
+
+<h4>TCP</h4>
+<b>Client.java</b><br>
+
+public class MyClient {<br>
+
+	public static void main(String[] args) {  <br>
+		try{      <br>
+		Socket s=new Socket("localhost",6666);  <br>
+		DataOutputStream dout=new DataOutputStream(s.getOutputStream());  <br>
+		dout.writeUTF("Hello Server");  <br>
+		dout.flush();  <br>
+		dout.close();  <br>
+		s.close();  <br>
+		}catch(Exception e){System.out.println(e);}  <br>
+		}  <br>
+	}  <br>
+</p>
+<b>Server.java</b><br>
+public class MyServer {<br>
+  
+	public static void main(String[] args){  <br>
+	try{  <br>
+	ServerSocket ss=new ServerSocket(6666);  <br>
+	Socket s=ss.accept();//establishes connection   <br>
+	DataInputStream dis=new DataInputStream(s.getInputStream());  <br>
+	String  str=(String)dis.readUTF();  <br>
+	System.out.println("Message= "+str);  <br>
+	ss.close();  <br>
+	}catch(Exception e){System.out.println(e);}  <br>
+	}  <br>
+
+
+</p>
+
+<p>---------------------------------------------------------------------------</p>
+<h4>UDP</h4>
+<b>Client.java</b><br>
+
+public class MyClientUdp {<br>
+		
+	  		  		  
+				public static void main(String[] args) throws Exception {  <br>
+			    DatagramSocket ds = new DatagramSocket();  <br>
+			    String str = "Welcome java";  <br>
+			    InetAddress ip = InetAddress.getByName("127.0.0.1");  <br>
+			     
+	DatagramPacket dp = new DatagramPacket(str.getBytes(),str.length(), ip, 3000);  <br>
+			    ds.send(dp);  <br>
+			    ds.close();  <br>
+				  }  <br>
+	}<br>
+
+
+<b>Server.java</b><br>
+import java.net.*;<br>
+public class MyServerUdp {<br>
+		  
+	  
+	public static void main(String[] args) throws Exception {  <br>
+	    DatagramSocket ds = new DatagramSocket(3000);  <br>
+	    byte[] buf = new byte[1024];  <br>
+	    DatagramPacket dp = new DatagramPacket(buf, 1024);  <br>
+	    ds.receive(dp);  <br>
+	    String str = new String(dp.getData(), 0, dp.getLength()); <br> 
+	    System.out.println(str);  <br>
+	    ds.close();  <br>
+
+	  }<br>
+		}<br>
+
+
+
+<p>---------------------------------------------------------------------------</p>
+<h4>MPI</h4>
+<p>import mpi.*;<br>
+public class MPI_Prog {<br>
+	public static void main(String args[]) throws Exception {<br>
+		MPI.Init(args);<br>
+		int me = MPI.COMM_WORLD.Rank();<br>
+		int size = MPI.COMM_WORLD.Size();<br>
+		System.out.println("Hi from <"+me+">from <"+size+">hello");<br>
+		MPI.Finalize();<br>
+		}<br>
+}<br>
+</p>
+<p>---------------------------------------------------------------------------</p>
+<h4>RMI</h4>
+<p><b>MyServer.java</b><br>
+
+package RMI;<br>
+
+import java.rmi.*; <br> 
+import java.rmi.registry.*; <br> 
+public class MyServer{  <br>
+public static void main(String args[]){<br>  
+try{  <br>
+Adder stub=new AdderRemote();<br>  
+Naming.rebind("rmi://localhost:5000/sonoo",stub);<br>  
+}catch(Exception e){System.out.println(e);}  <br>
+}  <br>
+}  <br>
+
+<br>
+<b>MyClient.java</b><br>
+package RMI;<br>
+
+import java.rmi.*;  <br>
+public class MyClient{  <br>
+public static void main(String args[]){  <br>
+try{  <br>
+Adder stub=(Adder)Naming.lookup("rmi://localhost:5000/sonoo");  <br>
+System.out.println(stub.add(34,4));  <br>
+}catch(Exception e){}  <br>
+}  <br>
+}  <br>
+<br>
+
+<b>Adder.java</b><br>
+package RMI;<br>
+
+//public class Adder {<br>
+import java.rmi.*;  <br>
+public interface Adder extends Remote{  <br>
+public int add(int x,int y)throws RemoteException;  <br>
+}  <br>
+<br>
+<b>AdderRemote.java</b><br>
+package RMI;<br>
+
+import java.rmi.*;  <br>
+import java.rmi.server.*;  <br>
+public class AdderRemote extends UnicastRemoteObject implements Adder{<br>  
+AdderRemote()throws RemoteException{  <br>
+super();  <br>
+}  <br>
+public int add(int x,int y){return x+y;}  <br>
+} <br>
+
+</p>
+
+<b>steps</b>
+<p>
+javac *java<br>
+rmic AddServerImpl<br>
+create folder<br>
+rmi registry<br>
+server - java Addserver<br>
+client - java AddClient 127.0.1 10 20<br>
+</p>
+
 
 </body>
 </html>
